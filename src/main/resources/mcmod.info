@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "guildbridge",
+    "name": "GuildBridge",
+    "description": "A cosmetic Minecraft 1.8.9 mod that customizes Hypixel Guild chat - Discord bridge messages.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["anastarawneh"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
