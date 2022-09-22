@@ -19,14 +19,18 @@ public class ChatMessageEvent {
         String text = event.message.getUnformattedText().replaceAll("\u00A7.", "");
         String regex = "^Guild > (\\[(?:VI|MV)P\\+{0,2}] )?([^ ]*)( \\[[\\w\\d]*])?: (.*): (.*)";
         Matcher matcher = Pattern.compile(regex).matcher(text);
-        if (matcher.matches() && matcher.group(2).equals(config.getCategory("general").get("bridgeUsername").getString())) {
-            String username = matcher.group(4);
-            String message = matcher.group(5);
+        String[] usernames = config.getCategory("general").get("bridgeUsernames").getStringList();
+        for (String bridgeUsername : usernames) {
+            if (matcher.matches() && matcher.group(2).equalsIgnoreCase(bridgeUsername)) {
+                String username = matcher.group(4);
+                String message = matcher.group(5);
 
-            Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
-                    ChatFormatting.BLUE + "Discord > " + ChatFormatting.GOLD + username + ChatFormatting.RESET + ": " + message
-            ));
-            event.setCanceled(true);
+                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+                        ChatFormatting.BLUE + "Discord > " + ChatFormatting.GOLD + username + ChatFormatting.RESET + ": " + message
+                ));
+                event.setCanceled(true);
+                break;
+            }
         }
     }
 }

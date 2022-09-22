@@ -3,32 +3,48 @@ package me.anastarawneh.guildbridge;
 import me.anastarawneh.guildbridge.event.ChatMessageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-
-@Mod(modid = GuildBridge.MODID, version = GuildBridge.VERSION)
+@Mod(modid = GuildBridge.MODID, version = GuildBridge.VERSION, guiFactory = "me.anastarawneh.guildbridge.gui.ConfigGuiFactory")
 public class GuildBridge {
     public static final String MODID = "guildbridge";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.1.0";
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static Configuration CONFIG;
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {
-        File configFile = new File(Loader.instance().getConfigDir(), "guildbridge.cfg");
-        Configuration config = new Configuration(configFile);
+        Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
-        config.getString("bridgeUsername", "general", "BRIDGE_USERNAME", "The Bridge account username.");
-        if (config.hasChanged()) config.save();
+        config.get("general", "bridgeUsernames", new String[] {"BRIDGE_USERNAME"}, "Bridge account usernames").setLanguageKey("guildbridge.configgui.bridgeUsernames");
+        if (config.hasChanged()) {
+            LOGGER.info("Detected old config format, attempting to update.");
+            String legacyUsername = config.getCategory("general").get("bridgeUsername").getString();
+            config.getCategory("general").get("bridgeUsernames").set(new String[] {legacyUsername});
+            config.getCategory("general").remove("bridgeUsername");
+            config.save();
+            LOGGER.info("Updated config file.");
+        }
         CONFIG = config;
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new ChatMessageEvent());
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (!event.modID.equals(MODID)) return;
+        CONFIG.get("general", "bridgeUsernames", new String[] {"BRIDGE_USERNAME"});
+        if (CONFIG.hasChanged()) CONFIG.save();
     }
 }
