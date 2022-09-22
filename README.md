@@ -12,3 +12,8 @@ A cosmetic Minecraft 1.8.9 mod that customizes Hypixel Guild chat - Discord brid
 
 ## Having problems?
 You can [open a new issue](https://github.com/anastarawneh/GuildBridge/issues/new), contact me on Discord (Anas#4896), or join my [personal Discord server](https://discord.gg/n6KX5dR) if you're having any issues with the mod.
+
+## TODO:
+- Option to specify the bridge message format.
+- Output message customization.
+- Option to use a Guild tag instead of a username.
