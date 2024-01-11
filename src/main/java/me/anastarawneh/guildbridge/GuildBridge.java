@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = GuildBridge.MODID, version = GuildBridge.VERSION, guiFactory = "me.anastarawneh.guildbridge.gui.ConfigGuiFactory")
 public class GuildBridge {
     public static final String MODID = "guildbridge";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.2.0";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static Configuration CONFIG;
 
