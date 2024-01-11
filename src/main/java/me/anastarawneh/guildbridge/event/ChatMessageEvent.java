@@ -17,19 +17,28 @@ public class ChatMessageEvent {
     public void onChatMessage(ClientChatReceivedEvent event) {
         Configuration config = GuildBridge.CONFIG;
         String text = event.message.getUnformattedText().replaceAll("\u00A7.", "");
-        String regex = "^Guild > (\\[(?:VI|MV)P\\+{0,2}] )?([^ ]*)( \\[[\\w\\d]*])?: (.*): (.*)";
+        String messageFormat = config.getCategory("general").get("bridgeFormat").getString();
+        String regex = "^Guild > (\\[(?:VI|MV)P\\+{0,2}] )?([^ ]*)( \\[\\w*])?: (.*)";
         Matcher matcher = Pattern.compile(regex).matcher(text);
         String[] usernames = config.getCategory("general").get("bridgeUsernames").getStringList();
         for (String bridgeUsername : usernames) {
             if (matcher.matches() && matcher.group(2).equalsIgnoreCase(bridgeUsername)) {
-                String username = matcher.group(4);
-                String message = matcher.group(5);
-
-                Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
-                        ChatFormatting.BLUE + "Discord > " + ChatFormatting.GOLD + username + ChatFormatting.RESET + ": " + message
-                ));
-                event.setCanceled(true);
-                break;
+                String bridgeMessage = matcher.group(4);
+                regex = messageFormat.replaceAll("\\$username", "(.*)").replaceAll("\\$message", ".*");
+                matcher = Pattern.compile(regex).matcher(bridgeMessage);
+                if (matcher.matches()) {
+                    String username = matcher.group(1);
+                    regex = messageFormat.replaceAll("\\$username", ".*").replaceAll("\\$message", "(.*)");
+                    matcher = Pattern.compile(regex).matcher(bridgeMessage);
+                    if (matcher.matches()) {
+                        String message = matcher.group(1);
+                        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(
+                                ChatFormatting.BLUE + "Discord > " + ChatFormatting.GOLD + username + ChatFormatting.RESET + ": " + message
+                        ));
+                        event.setCanceled(true);
+                        break;
+                    }
+                }
             }
         }
     }

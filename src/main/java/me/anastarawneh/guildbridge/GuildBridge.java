@@ -24,6 +24,7 @@ public class GuildBridge {
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
         config.get("general", "bridgeUsernames", new String[] {"BRIDGE_USERNAME"}, "Bridge account usernames").setLanguageKey("guildbridge.configgui.bridgeUsernames");
+        config.get("general", "bridgeFormat", "$username: $message", "Bridge message format").setLanguageKey("guildbridge.configgui.bridgeFormat");
         if (config.hasChanged()) {
             LOGGER.info("Detected old config format, attempting to update.");
             String legacyUsername = config.getCategory("general").get("bridgeUsername").getString();
@@ -45,6 +46,7 @@ public class GuildBridge {
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (!event.modID.equals(MODID)) return;
         CONFIG.get("general", "bridgeUsernames", new String[] {"BRIDGE_USERNAME"});
+        CONFIG.get("general", "bridgeFormat", "$username: $message");
         if (CONFIG.hasChanged()) CONFIG.save();
     }
 }
