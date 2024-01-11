@@ -21,7 +21,7 @@ plugins {
 }
 */
 version = "1.1.0"
-group= "me.anastarawneh.guildbridge" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "me.anastarawneh" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "guildbridge"
 
 minecraft {
@@ -34,7 +34,7 @@ minecraft {
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "stable_20"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 dependencies {
@@ -79,4 +79,10 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+apply plugin: 'java'
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 }

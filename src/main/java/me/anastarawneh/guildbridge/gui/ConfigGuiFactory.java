@@ -7,6 +7,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 import java.util.Set;
 
 public class ConfigGuiFactory implements IModGuiFactory {
+    // Don't delete this, it's needed for the config menu to be accessible
     @Override
     public void initialize(Minecraft minecraftInstance) {
 
